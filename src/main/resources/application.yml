@@ -11,7 +11,7 @@ spring:
         default-page-size: 10
 
   datasource:
-    url: jdbc:h2:mem:baeklog
+    url: jdbc:h2:mem:travel
     username: sa
     password:
     driver-class-name: org.h2.Driver

@@ -3,8 +3,12 @@ package com.travel.agency.repository;
 import com.travel.agency.domain.Member;
 import java.util.Optional;
 import javax.persistence.EntityManager;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
