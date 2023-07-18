@@ -3,12 +3,8 @@ package com.travel.agency.repository;
 import com.travel.agency.domain.Member;
 import java.util.Optional;
 import javax.persistence.EntityManager;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -35,7 +31,8 @@ public class MemberRepository {
         Assert.notNull(id, "The given delete member id must not be null!");
 
         delete(findById(id).orElseThrow(() -> new EmptyResultDataAccessException(
-                String.format("No %s entity with id %s exists!", Member.class, id), 1)));
+                String.format("No %s entity with id %s exists!", Member.class, id), 1)
+        ));
     }
 
     public void delete(Member member) {

@@ -1,5 +1,6 @@
 package com.travel.agency.domain;
 
+import com.travel.agency.dto.request.MemberCreate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -47,6 +48,20 @@ public class Member {
         this.postcode = postcode;
         this.address = address;
         this.englishName = englishName;
+    }
+
+    public static Member from(MemberCreate memberCreate) {
+        return Member.builder()
+                .id(memberCreate.getId())
+                .password(memberCreate.getPassword())
+                .name(memberCreate.getName())
+                .ssn(memberCreate.getSsn())
+                .tel(memberCreate.getTel())
+                .email(memberCreate.getEmail())
+                .postcode(memberCreate.getPostcode())
+                .address(memberCreate.getAddress())
+                .englishName(memberCreate.getEnglishName())
+                .build();
     }
 
 }
