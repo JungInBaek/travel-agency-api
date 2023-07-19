@@ -1,29 +1,33 @@
-package com.travel.agency.repository;
+package com.travel.agency.service;
 
 import com.travel.agency.domain.Member;
+import com.travel.agency.dto.request.MemberCreate;
+import com.travel.agency.dto.response.MemberResponse;
 import com.travel.agency.exception.MemberNotFoundException;
+import com.travel.agency.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest
-class MemberRepositoryTest {
+class MemberServiceTest {
+
+    @Autowired
+    private MemberService memberService;
 
     @Autowired
     private MemberRepository memberRepository;
 
     @Test
-    @DisplayName("회원데이터 등록")
-    void memberSaveTest() {
+    @DisplayName("회원가입 테스트")
+    void createTest() {
         // given
-        Member member = Member.builder()
+        MemberCreate memberCreate = MemberCreate.builder()
                 .id("baek")
                 .password("12345")
                 .name("백정인")
@@ -36,26 +40,26 @@ class MemberRepositoryTest {
                 .build();
 
         // when
-        memberRepository.save(member);
+        memberService.create(memberCreate);
 
         // then
-        Member savedMember = memberRepository.findById("baek").get();
+        Member member = memberRepository.findById(memberCreate.getId()).get();
 
-        assertThat(savedMember).isNotNull();
-        assertEquals(member.getId(), savedMember.getId());
-        assertEquals(member.getPassword(), savedMember.getPassword());
-        assertEquals(member.getName(), savedMember.getName());
-        assertEquals(member.getSsn(), savedMember.getSsn());
-        assertEquals(member.getTel(), savedMember.getTel());
-        assertEquals(member.getEmail(), savedMember.getEmail());
-        assertEquals(member.getPostcode(), savedMember.getPostcode());
-        assertEquals(member.getAddress(), savedMember.getAddress());
-        assertEquals(member.getEnglishName(), savedMember.getEnglishName());
+        assertNotNull(member);
+        assertEquals(memberCreate.getId(), member.getId());
+        assertEquals(memberCreate.getPassword(), member.getPassword());
+        assertEquals(memberCreate.getName(), member.getName());
+        assertEquals(memberCreate.getSsn(), member.getSsn());
+        assertEquals(memberCreate.getTel(), member.getTel());
+        assertEquals(memberCreate.getEmail(), member.getEmail());
+        assertEquals(memberCreate.getPostcode(), member.getPostcode());
+        assertEquals(memberCreate.getAddress(), member.getAddress());
+        assertEquals(memberCreate.getEnglishName(), member.getEnglishName());
     }
 
     @Test
-    @DisplayName("회원데이터 조회")
-    void findMemberTest() {
+    @DisplayName("회원조회 테스트")
+    void fineMemberTest() {
         // given
         Member member = Member.builder()
                 .id("baek")
@@ -72,24 +76,24 @@ class MemberRepositoryTest {
         memberRepository.save(member);
 
         // when
-        Member savedMember = memberRepository.findById("baek").get();
+        MemberResponse memberResponse = memberService.get(member.getId());
 
         // then
-        assertThat(savedMember).isNotNull();
-        assertEquals(member.getId(), savedMember.getId());
-        assertEquals(member.getPassword(), savedMember.getPassword());
-        assertEquals(member.getName(), savedMember.getName());
-        assertEquals(member.getSsn(), savedMember.getSsn());
-        assertEquals(member.getTel(), savedMember.getTel());
-        assertEquals(member.getEmail(), savedMember.getEmail());
-        assertEquals(member.getPostcode(), savedMember.getPostcode());
-        assertEquals(member.getAddress(), savedMember.getAddress());
-        assertEquals(member.getEnglishName(), savedMember.getEnglishName());
+        assertNotNull(member);
+        assertEquals(member.getId(), memberResponse.getId());
+        assertEquals(member.getPassword(), memberResponse.getPassword());
+        assertEquals(member.getName(), memberResponse.getName());
+        assertEquals(member.getSsn(), memberResponse.getSsn());
+        assertEquals(member.getTel(), memberResponse.getTel());
+        assertEquals(member.getEmail(), memberResponse.getEmail());
+        assertEquals(member.getPostcode(), memberResponse.getPostcode());
+        assertEquals(member.getAddress(), memberResponse.getAddress());
+        assertEquals(member.getEnglishName(), memberResponse.getEnglishName());
     }
 
     @Test
-    @DisplayName("아이디로 회원데이터 삭제")
-    void deleteByMemberIdTest() {
+    @DisplayName("회원조회 테스트 - 존재하지 않는 회원")
+    void findFailedTest() {
         // given
         Member member = Member.builder()
                 .id("baek")
@@ -105,17 +109,14 @@ class MemberRepositoryTest {
 
         memberRepository.save(member);
 
-        // when
-        memberRepository.deleteById(member.getId());
-
-        // then
+        // expected
         assertThrows(MemberNotFoundException.class, () -> {
-            memberRepository.findById(member.getId());
+            memberService.get("kwon");
         });
     }
 
     @Test
-    @DisplayName("엔티티로 회원데이터 삭제")
+    @DisplayName("회원삭제 테스트")
     void deleteTest() {
         // given
         Member member = Member.builder()
@@ -133,7 +134,7 @@ class MemberRepositoryTest {
         memberRepository.save(member);
 
         // when
-        memberRepository.delete(member);
+        memberService.delete(member.getId());
 
         // then
         assertThrows(MemberNotFoundException.class, () -> {
