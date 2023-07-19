@@ -1,13 +1,17 @@
 package com.travel.agency.repository;
 
 import com.travel.agency.domain.Member;
-import java.util.Optional;
-import javax.persistence.EntityManager;
+import com.travel.agency.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
@@ -22,9 +26,18 @@ public class MemberRepository {
 
     @Transactional(readOnly = true)
     public Optional<Member> findById(String id) {
-        return Optional.of(em.createQuery("select m from Member m where m.id = :id", Member.class)
-                .setParameter("id", id)
-                .getSingleResult());
+        try {
+            Member member = em.createQuery("select m from Member m where m.id = :id", Member.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+            return Optional.of(member);
+        } catch (NoResultException e) {
+            throw new MemberNotFoundException();
+        }
+    }
+
+    public List<Member> findAll() {
+        return em.createQuery("select m from Member m", Member.class).getResultList();
     }
 
     public void deleteById(String id) {
@@ -43,6 +56,12 @@ public class MemberRepository {
         }
 
         em.remove(em.contains(member) ? member : em.merge(member));
+    }
+
+    public void deleteAll() {
+        findAll().stream().forEach(member -> {
+            delete(member);
+        });
     }
 
 }
