@@ -1,12 +1,16 @@
 package com.travel.agency.domain;
 
 import com.travel.agency.dto.request.MemberCreate;
+import com.travel.agency.dto.request.MemberUpdate;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import lombok.*;
 
 @Getter
 @Entity
@@ -64,4 +68,11 @@ public class Member {
                 .build();
     }
 
+    public void edit(MemberUpdate memberUpdate) {
+        this.password = memberUpdate.getPassword();
+        this.email = memberUpdate.getEmail();
+        this.postcode = memberUpdate.getPostcode();
+        this.address = memberUpdate.getAddress();
+        this.englishName = memberUpdate.getEnglishName();
+    }
 }

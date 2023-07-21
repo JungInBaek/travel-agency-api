@@ -8,22 +8,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 @Getter
-public class MemberCreate {
+public class MemberUpdate {
 
     @NotBlank(message = "아이디를 입력해주세요")
     private final String id;
 
     @NotBlank(message = "비밀번호를 입력해주세요")
     private final String password;
-
-    @NotBlank(message = "이름을 입력해주세요")
-    private final String name;
-
-    @NotBlank(message = "주민번호를 입력해주세요")
-    private final String ssn;
-
-    @NotBlank(message = "전화번호를 입력해주세요")
-    private final String tel;
 
     @Email(message = "이메일 형식을 맞춰주세요.")
     private final String email;
@@ -32,17 +23,13 @@ public class MemberCreate {
 
     private final String address;
 
-    @Pattern(regexp = "^[a-zA-Z]*$", message = "영문만 입력할 수 있습니다.")
+    @Pattern(regexp = "[a-zA-Z]", message = "영문만 입력할 수 있습니다.")
     private final String englishName;
 
     @Builder
-    public MemberCreate(String id, String password, String name, String ssn, String tel,
-                        String email, String postcode, String address, String englishName) {
+    public MemberUpdate(String id, String password, String email, String postcode, String address, String englishName) {
         this.id = id;
         this.password = password;
-        this.name = name;
-        this.ssn = ssn;
-        this.tel = tel;
         this.email = email;
         this.postcode = postcode;
         this.address = address;
@@ -50,5 +37,3 @@ public class MemberCreate {
     }
 
 }
-
-

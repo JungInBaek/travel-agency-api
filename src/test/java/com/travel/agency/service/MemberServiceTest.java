@@ -2,6 +2,7 @@ package com.travel.agency.service;
 
 import com.travel.agency.domain.Member;
 import com.travel.agency.dto.request.MemberCreate;
+import com.travel.agency.dto.request.MemberUpdate;
 import com.travel.agency.dto.response.MemberResponse;
 import com.travel.agency.exception.MemberNotFoundException;
 import com.travel.agency.repository.MemberRepository;
@@ -55,6 +56,46 @@ class MemberServiceTest {
         assertEquals(memberCreate.getPostcode(), member.getPostcode());
         assertEquals(memberCreate.getAddress(), member.getAddress());
         assertEquals(memberCreate.getEnglishName(), member.getEnglishName());
+    }
+
+    @Test
+    @DisplayName("회원수정 테스트")
+    void editMemberTest() {
+        // given
+        Member member = Member.builder()
+                .id("baek")
+                .password("12345")
+                .name("백정인")
+                .ssn("960519-1111111")
+                .tel("010-1111-2222")
+                .email("baek@naver.com")
+                .postcode("45910")
+                .address("부산 해운대구 송정동")
+                .englishName("BJI")
+                .build();
+
+        memberRepository.save(member);
+
+        MemberUpdate memberUpdate = MemberUpdate.builder()
+                .id("baek")
+                .password("54321")
+                .email("kwon@naver.com")
+                .postcode("11111")
+                .address("부산 중구 남포동")
+                .englishName("KYJ")
+                .build();
+
+        // when
+        memberService.update(memberUpdate);
+
+        // then
+        Member actualMember = memberRepository.findById(memberUpdate.getId()).get();
+        assertNotNull(actualMember);
+        assertEquals(memberUpdate.getPassword(), actualMember.getPassword());
+        assertEquals(memberUpdate.getEmail(), actualMember.getEmail());
+        assertEquals(memberUpdate.getPostcode(), actualMember.getPostcode());
+        assertEquals(memberUpdate.getAddress(), actualMember.getAddress());
+        assertEquals(memberUpdate.getEnglishName(), actualMember.getEnglishName());
     }
 
     @Test
@@ -138,7 +179,7 @@ class MemberServiceTest {
 
         // then
         assertThrows(MemberNotFoundException.class, () -> {
-            memberRepository.findById(member.getId());
+            memberService.get(member.getId());
         });
     }
 
