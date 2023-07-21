@@ -2,6 +2,7 @@ package com.travel.agency.service;
 
 import com.travel.agency.domain.Member;
 import com.travel.agency.dto.request.MemberCreate;
+import com.travel.agency.dto.request.MemberUpdate;
 import com.travel.agency.dto.response.MemberResponse;
 import com.travel.agency.exception.MemberNotFoundException;
 import com.travel.agency.repository.MemberRepository;
@@ -21,9 +22,19 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    public void update(MemberUpdate memberUpdate) {
+        Member savedMember = memberRepository
+                .findById(memberUpdate.getId())
+                .orElseThrow(MemberNotFoundException::new);
+        savedMember.edit(memberUpdate);
+        memberRepository.save(savedMember);
+    }
+
     @Transactional(readOnly = true)
     public MemberResponse get(String id) {
-        Member member = memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository
+                .findById(id)
+                .orElseThrow(MemberNotFoundException::new);
         return MemberResponse.from(member);
     }
 
