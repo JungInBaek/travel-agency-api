@@ -36,7 +36,7 @@ class ExceptionControllerTest {
                 .email("baek.naver.com")
                 .postcode("45910")
                 .address("부산 해운대구 송정동")
-                .englishName("응애")
+                .englishName("한글")
                 .build();
 
         String json = objectMapper.writeValueAsString(memberCreate);
