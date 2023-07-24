@@ -1,11 +1,10 @@
 package com.travel.agency.dto.request;
 
-import lombok.Builder;
-import lombok.Getter;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 public class MemberUpdate {
@@ -23,11 +22,12 @@ public class MemberUpdate {
 
     private final String address;
 
-    @Pattern(regexp = "[a-zA-Z]", message = "영문만 입력할 수 있습니다.")
+    @Pattern(regexp = "^[a-zA-Z]*$", message = "영문만 입력할 수 있습니다.")
     private final String englishName;
 
     @Builder
-    public MemberUpdate(String id, String password, String email, String postcode, String address, String englishName) {
+    public MemberUpdate(String id, String password, String email, String postcode, String address,
+            String englishName) {
         this.id = id;
         this.password = password;
         this.email = email;
