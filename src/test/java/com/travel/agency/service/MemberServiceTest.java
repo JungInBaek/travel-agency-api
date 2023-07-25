@@ -48,7 +48,7 @@ class MemberServiceTest {
 
         assertNotNull(member);
         assertEquals(memberCreate.getId(), member.getId());
-        assertEquals(memberCreate.getPassword(), member.getPassword());
+        assertEquals(EncryptionUtils.encryptionSHA256(memberCreate.getPassword()), member.getPassword());
         assertEquals(memberCreate.getName(), member.getName());
         assertEquals(memberCreate.getSsn(), member.getSsn());
         assertEquals(memberCreate.getTel(), member.getTel());
@@ -91,7 +91,7 @@ class MemberServiceTest {
         // then
         Member actualMember = memberRepository.findById(memberUpdate.getId()).get();
         assertNotNull(actualMember);
-        assertEquals(memberUpdate.getPassword(), actualMember.getPassword());
+        assertEquals(EncryptionUtils.encryptionSHA256(memberUpdate.getPassword()), actualMember.getPassword());
         assertEquals(memberUpdate.getEmail(), actualMember.getEmail());
         assertEquals(memberUpdate.getPostcode(), actualMember.getPostcode());
         assertEquals(memberUpdate.getAddress(), actualMember.getAddress());
@@ -122,7 +122,6 @@ class MemberServiceTest {
         // then
         assertNotNull(member);
         assertEquals(member.getId(), memberResponse.getId());
-        assertEquals(member.getPassword(), memberResponse.getPassword());
         assertEquals(member.getName(), memberResponse.getName());
         assertEquals(member.getSsn(), memberResponse.getSsn());
         assertEquals(member.getTel(), memberResponse.getTel());

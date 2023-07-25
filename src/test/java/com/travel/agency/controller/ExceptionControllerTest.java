@@ -34,7 +34,7 @@ class ExceptionControllerTest {
                 .ssn("")
                 .tel("")
                 .email("baek.naver.com")
-                .postcode("45910")
+                .postcode("ㅁs")
                 .address("부산 해운대구 송정동")
                 .englishName("한글")
                 .build();
@@ -52,7 +52,8 @@ class ExceptionControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.validation.ssn").value("주민번호를 입력해주세요"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.validation.tel").value("전화번호를 입력해주세요"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.validation.email").value("이메일 형식을 맞춰주세요."))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.validation.englishName").value("영문만 입력할 수 있습니다."))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.validation.postcode").value("숫자만 입력할 수 있습니다"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.validation.englishName").value("영문만 입력할 수 있습니다"))
                 .andDo(MockMvcResultHandlers.print());
     }
 

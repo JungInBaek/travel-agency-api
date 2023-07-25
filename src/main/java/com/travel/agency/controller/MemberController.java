@@ -20,9 +20,14 @@ public class MemberController {
         memberService.create(memberCreate);
     }
 
-    @PatchMapping("/members/{id}")
-    public void update(@PathVariable String id, @RequestBody MemberUpdate memberUpdate) {
+    @PatchMapping("/members")
+    public void update(@RequestBody MemberUpdate memberUpdate) {
         memberService.update(memberUpdate);
+    }
+
+    @GetMapping("/members/{id}/check")
+    public void checkId(@PathVariable String id) {
+        memberService.get(id);
     }
 
     @GetMapping("/members/{id}")
