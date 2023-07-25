@@ -1,8 +1,6 @@
 package com.travel.agency.dto.response;
 
 import com.travel.agency.domain.Member;
-import com.travel.agency.dto.request.MemberCreate;
-import javax.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,8 +8,6 @@ import lombok.Getter;
 public class MemberResponse {
 
     private final String id;
-
-    private final String password;
 
     private final String name;
 
@@ -28,10 +24,9 @@ public class MemberResponse {
     private final String englishName;
 
     @Builder
-    public MemberResponse(String id, String password, String name, String ssn, String tel,
+    public MemberResponse(String id, String name, String ssn, String tel,
             String email, String postcode, String address, String englishName) {
         this.id = id;
-        this.password = password;
         this.name = name;
         this.ssn = ssn;
         this.tel = tel;
@@ -44,7 +39,6 @@ public class MemberResponse {
     public static MemberResponse from(Member member) {
         return MemberResponse.builder()
                 .id(member.getId())
-                .password(member.getPassword())
                 .name(member.getName())
                 .ssn(member.getSsn())
                 .tel(member.getTel())

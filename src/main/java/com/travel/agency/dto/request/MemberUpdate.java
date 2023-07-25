@@ -12,7 +12,6 @@ public class MemberUpdate {
     @NotBlank(message = "아이디를 입력해주세요")
     private final String id;
 
-    @NotBlank(message = "비밀번호를 입력해주세요")
     private final String password;
 
     @Email(message = "이메일 형식을 맞춰주세요.")

@@ -92,7 +92,7 @@ class MemberControllerTest {
         String json = objectMapper.writeValueAsString(memberUpdate);
 
         // expected
-        mockMvc.perform(MockMvcRequestBuilders.patch("/members/{id}", memberUpdate.getId())
+        mockMvc.perform(MockMvcRequestBuilders.patch("/members", memberUpdate.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -123,7 +123,6 @@ class MemberControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(member.getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.password").value(member.getPassword()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(member.getName()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.ssn").value(member.getSsn()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.tel").value(member.getTel()))

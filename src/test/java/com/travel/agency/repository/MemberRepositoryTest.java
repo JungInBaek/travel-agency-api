@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -140,6 +141,33 @@ class MemberRepositoryTest {
         // then
         assertThrows(MemberNotFoundException.class, () -> {
             memberRepository.findById(member.getId()).orElseThrow(MemberNotFoundException::new);
+        });
+    }
+
+    @Test
+    @DisplayName("회원데이터 등록 - 아이디 중복")
+    void duplicatedMemberSaveTest() {
+        // given
+        Member member = Member.builder()
+                .id("baek")
+                .password("12345")
+                .name("백정인")
+                .ssn("960519-1111111")
+                .tel("010-1111-2222")
+                .email("baek@naver.com")
+                .postcode("45910")
+                .address("부산 해운대구 송정동")
+                .englishName("BJI")
+                .build();
+        memberRepository.save(member);
+
+        Member baek = Member.builder()
+                .id("baek")
+                .build();
+
+        // expected
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            memberRepository.save(baek);
         });
     }
 
