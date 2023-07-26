@@ -2,6 +2,8 @@ package com.travel.agency.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.travel.agency.dto.request.MemberCreate;
+import com.travel.agency.repository.MemberRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,14 @@ class ExceptionControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @AfterEach
+    void clear() {
+        memberRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("요청 파라미터 바인딩 예외 발생 테스트")

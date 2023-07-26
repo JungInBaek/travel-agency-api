@@ -2,11 +2,15 @@ package com.travel.agency.service;
 
 import com.travel.agency.domain.Member;
 import com.travel.agency.domain.MemberEditor;
+import com.travel.agency.domain.MemberEditor.MemberEditorBuilder;
 import com.travel.agency.dto.request.MemberCreate;
 import com.travel.agency.dto.request.MemberUpdate;
 import com.travel.agency.dto.response.MemberResponse;
+import com.travel.agency.exception.InvalidPasswordException;
 import com.travel.agency.exception.MemberNotFoundException;
 import com.travel.agency.repository.MemberRepository;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,18 +39,27 @@ public class MemberService {
 
     public void update(MemberUpdate memberUpdate) {
         Member savedMember = memberRepository
-                .findById(memberUpdate.getId())
-                .orElseThrow(MemberNotFoundException::new);
-        MemberEditor.MemberEditorBuilder memberEditorBuilder = savedMember.toMemberEditor();
+                .findByIdAndPassword(memberUpdate.getId(), EncryptionUtils.encryptionSHA256(memberUpdate.getPassword()))
+                .orElseThrow(InvalidPasswordException::new);
+
+        MemberEditorBuilder memberEditorBuilder = savedMember.toMemberEditor();
         MemberEditor memberEditor = memberEditorBuilder
-                .password(EncryptionUtils.encryptionSHA256(memberUpdate.getPassword()))
                 .email(memberUpdate.getEmail())
                 .postcode(memberUpdate.getPostcode())
                 .address(memberUpdate.getAddress())
                 .englishName(memberUpdate.getEnglishName())
                 .build();
         savedMember.edit(memberEditor);
-        memberRepository.save(savedMember);
+    }
+
+    public Map<String, String> duplicateIdCheck(String id) {
+        Map<String, String> body = new HashMap<>();
+        boolean result = memberRepository.duplicateIdCheck(id).isEmpty();
+        if (result) {
+            body.put("message", "사용 가능한 아이디입니다");
+        }
+        body.put("message", "중복된 아이디입니다");
+        return body;
     }
 
     @Transactional(readOnly = true)
