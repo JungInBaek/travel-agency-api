@@ -5,7 +5,8 @@ import com.travel.agency.domain.Member;
 import com.travel.agency.dto.request.MemberCreate;
 import com.travel.agency.dto.request.MemberUpdate;
 import com.travel.agency.repository.MemberRepository;
-import org.junit.jupiter.api.BeforeEach;
+import com.travel.agency.service.MemberService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,13 @@ class MemberControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
+    private MemberService memberService;
+
+    @Autowired
     private MemberRepository memberRepository;
 
-    @BeforeEach
+
+    @AfterEach
     void clear() {
         memberRepository.deleteAll();
     }
@@ -66,7 +71,7 @@ class MemberControllerTest {
     @DisplayName("회원수정 테스트")
     void update() throws Exception {
         // given
-        Member member = Member.builder()
+        MemberCreate member = MemberCreate.builder()
                 .id("baek")
                 .password("12345")
                 .name("백정인")
@@ -78,11 +83,11 @@ class MemberControllerTest {
                 .englishName("BJI")
                 .build();
 
-        memberRepository.save(member);
+        memberService.create(member);
 
         MemberUpdate memberUpdate = MemberUpdate.builder()
                 .id("baek")
-                .password("54321")
+                .password("12345")
                 .email("kwon@naver.com")
                 .postcode("11111")
                 .address("부산 중구 남포동")

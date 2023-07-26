@@ -1,26 +1,32 @@
 package com.travel.agency.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.travel.agency.domain.Member;
 import com.travel.agency.exception.MemberNotFoundException;
+import javax.persistence.EntityManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-@Transactional
 @SpringBootTest
 class MemberRepositoryTest {
 
     @Autowired
+    private EntityManager em;
+
+    @Autowired
     private MemberRepository memberRepository;
+
+    @AfterEach
+    void clear() {
+        memberRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("회원데이터 등록")
@@ -161,13 +167,21 @@ class MemberRepositoryTest {
                 .build();
         memberRepository.save(member);
 
-        Member baek = Member.builder()
+        Member kwon = Member.builder()
                 .id("baek")
+                .password("54321")
+                .name("권용재")
+                .ssn("961231-2222222")
+                .tel("010-3333-4444")
+                .email("kwon@naver.com")
+                .postcode("45123")
+                .address("부산 남구 용호동")
+                .englishName("KYJ")
                 .build();
 
         // expected
         assertThrows(DataIntegrityViolationException.class, () -> {
-            memberRepository.save(baek);
+            memberRepository.save(kwon);
         });
     }
 

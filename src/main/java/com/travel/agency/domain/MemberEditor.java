@@ -7,14 +7,12 @@ import lombok.NoArgsConstructor;
 @Getter
 public class MemberEditor {
 
-    private final String password;
     private final String email;
     private final String postcode;
     private final String address;
     private final String englishName;
 
     private MemberEditor(MemberEditorBuilder memberEditorBuilder) {
-        this.password = memberEditorBuilder.getPassword();
         this.email = memberEditorBuilder.getEmail();
         this.postcode = memberEditorBuilder.getPostcode();
         this.address = memberEditorBuilder.getAddress();
@@ -30,18 +28,10 @@ public class MemberEditor {
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class MemberEditorBuilder {
 
-        private String password;
         private String email;
         private String postcode;
         private String address;
         private String englishName;
-
-        public MemberEditorBuilder password(String password) {
-            if (password != null) {
-                this.password = password;
-            }
-            return this;
-        }
 
         public MemberEditorBuilder email(String email) {
             if (email != null) {

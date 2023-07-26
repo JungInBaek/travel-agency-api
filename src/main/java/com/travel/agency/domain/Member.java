@@ -1,10 +1,8 @@
 package com.travel.agency.domain;
 
-import com.travel.agency.domain.MemberEditor.MemberEditorBuilder;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +10,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
@@ -49,7 +46,7 @@ public class Member {
     private String englishName;
 
     @Builder
-    public Member(String id, String password, String name, String ssn, String tel, String email,
+    private Member(String id, String password, String name, String ssn, String tel, String email,
             String postcode, String address, String englishName) {
         this.id = id;
         this.password = password;
@@ -62,9 +59,8 @@ public class Member {
         this.englishName = englishName;
     }
 
-    public MemberEditorBuilder toMemberEditor() {
+    public MemberEditor.MemberEditorBuilder toMemberEditor() {
         return MemberEditor.builder()
-                .password(this.password)
                 .email(this.email)
                 .postcode(this.postcode)
                 .address(this.address)
@@ -72,7 +68,6 @@ public class Member {
     }
 
     public void edit(MemberEditor memberEditor) {
-        this.password = memberEditor.getPassword();
         this.email = memberEditor.getEmail();
         this.postcode = memberEditor.getPostcode();
         this.address = memberEditor.getAddress();

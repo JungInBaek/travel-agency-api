@@ -1,20 +1,21 @@
 package com.travel.agency.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.travel.agency.domain.Member;
 import com.travel.agency.dto.request.MemberCreate;
 import com.travel.agency.dto.request.MemberUpdate;
 import com.travel.agency.dto.response.MemberResponse;
 import com.travel.agency.exception.MemberNotFoundException;
 import com.travel.agency.repository.MemberRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-@Transactional
 @SpringBootTest
 class MemberServiceTest {
 
@@ -23,6 +24,11 @@ class MemberServiceTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @AfterEach
+    void clear() {
+        memberRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("회원가입 테스트")
@@ -62,7 +68,7 @@ class MemberServiceTest {
     @DisplayName("회원수정 테스트")
     void editMemberTest() {
         // given
-        Member member = Member.builder()
+        MemberCreate memberCreate = MemberCreate.builder()
                 .id("baek")
                 .password("12345")
                 .name("백정인")
@@ -73,12 +79,11 @@ class MemberServiceTest {
                 .address("부산 해운대구 송정동")
                 .englishName("BJI")
                 .build();
-
-        memberRepository.save(member);
+        memberService.create(memberCreate);
 
         MemberUpdate memberUpdate = MemberUpdate.builder()
                 .id("baek")
-                .password("54321")
+                .password("12345")
                 .email("kwon@naver.com")
                 .postcode("11111")
                 .address("부산 중구 남포동")
@@ -91,7 +96,6 @@ class MemberServiceTest {
         // then
         Member actualMember = memberRepository.findById(memberUpdate.getId()).get();
         assertNotNull(actualMember);
-        assertEquals(EncryptionUtils.encryptionSHA256(memberUpdate.getPassword()), actualMember.getPassword());
         assertEquals(memberUpdate.getEmail(), actualMember.getEmail());
         assertEquals(memberUpdate.getPostcode(), actualMember.getPostcode());
         assertEquals(memberUpdate.getAddress(), actualMember.getAddress());
