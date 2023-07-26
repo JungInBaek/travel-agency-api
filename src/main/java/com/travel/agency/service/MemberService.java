@@ -9,7 +9,6 @@ import com.travel.agency.dto.response.MemberResponse;
 import com.travel.agency.exception.InvalidPasswordException;
 import com.travel.agency.exception.MemberNotFoundException;
 import com.travel.agency.repository.MemberRepository;
-import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -53,13 +52,8 @@ public class MemberService {
     }
 
     public Map<String, String> duplicateIdCheck(String id) {
-        Map<String, String> body = new HashMap<>();
         boolean result = memberRepository.duplicateIdCheck(id).isEmpty();
-        if (result) {
-            body.put("message", "사용 가능한 아이디입니다");
-        }
-        body.put("message", "중복된 아이디입니다");
-        return body;
+        return DuplicateIdCheckMessageFactory.getMessage(result);
     }
 
     @Transactional(readOnly = true)
