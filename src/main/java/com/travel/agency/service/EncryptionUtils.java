@@ -2,31 +2,47 @@ package com.travel.agency.service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class EncryptionUtils {
 
-    public static String encryptionSHA256(String s) {
-        return encrypt(s, "SHA-256");
+    private static final int SALT_SIZE = 16;
+
+    public static String createSalt() {
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] temp = new byte[SALT_SIZE];
+        secureRandom.nextBytes(temp);
+        return byteToString(temp);
     }
 
-    public static String encrypt(String s, String messageDigest) {
-        MessageDigest md = null;
+    public static String hashing(String password, String salt) {
+        MessageDigest md;
         try {
-            md = MessageDigest.getInstance(messageDigest);
+            md = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(messageDigest + "는 없는 암호화 알고리즘입니다.", e);
+            throw new RuntimeException("잘못된 암호화 알고리즘입니다.", e);
         }
-        md.reset();
-        byte[] bytes = s.getBytes();
-        StringBuilder sb = new StringBuilder();
-        byte[] digested = md.digest(bytes);
-        for (byte b : digested) {
-            sb.append(Integer.toString((b&0xff) + 0x100, 16).substring(1));
+        return keyStretching(password.getBytes(), salt, md);
+    }
+
+    private static String keyStretching(byte[] password, String salt, MessageDigest md) {
+        for (int i = 0; i < 10000; i++) {
+            String temp = byteToString(password) + salt;
+            md.update(temp.getBytes());
+            password = md.digest();
         }
-        return sb.toString();
+        return byteToString(password);
+    }
+
+    private static String byteToString(byte[] temp) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (byte b : temp) {
+            stringBuilder.append(String.format("%02x", b));
+        }
+        return stringBuilder.toString();
     }
 
 }

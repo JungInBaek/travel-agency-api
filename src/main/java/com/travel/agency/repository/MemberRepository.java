@@ -41,6 +41,15 @@ public class MemberRepository {
                 .findFirst();
     }
 
+    public Optional<String> getSalt(String id) {
+        Assert.notNull(id, "아이디를 입력해주세요");
+        String qlString = "select m.salt from Member m where m.id = :id";
+        return em.createQuery(qlString, String.class)
+                .setParameter("id", id)
+                .getResultStream()
+                .findFirst();
+    }
+
     @Transactional(readOnly = true)
     public Optional<Member> findById(String id) {
         Member member = em.find(Member.class, id);
@@ -65,9 +74,7 @@ public class MemberRepository {
     }
 
     public void deleteAll() {
-        findAll().stream().forEach(member -> {
-            delete(member);
-        });
+        findAll().forEach(this::delete);
     }
 
 }

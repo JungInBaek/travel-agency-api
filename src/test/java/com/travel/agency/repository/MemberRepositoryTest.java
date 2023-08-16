@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.travel.agency.domain.Member;
 import com.travel.agency.exception.MemberNotFoundException;
+import com.travel.agency.service.EncryptionUtils;
 import javax.persistence.EntityManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,6 +43,7 @@ class MemberRepositoryTest {
                 .postcode("45910")
                 .address("부산 해운대구 송정동")
                 .englishName("BJI")
+                .salt(EncryptionUtils.createSalt())
                 .build();
 
         // when
@@ -76,6 +78,7 @@ class MemberRepositoryTest {
                 .postcode("45910")
                 .address("부산 해운대구 송정동")
                 .englishName("BJI")
+                .salt(EncryptionUtils.createSalt())
                 .build();
 
         memberRepository.save(member);
@@ -110,6 +113,7 @@ class MemberRepositoryTest {
                 .postcode("45910")
                 .address("부산 해운대구 송정동")
                 .englishName("BJI")
+                .salt(EncryptionUtils.createSalt())
                 .build();
 
         memberRepository.save(member);
@@ -137,6 +141,7 @@ class MemberRepositoryTest {
                 .postcode("45910")
                 .address("부산 해운대구 송정동")
                 .englishName("BJI")
+                .salt(EncryptionUtils.createSalt())
                 .build();
 
         memberRepository.save(member);
@@ -154,6 +159,7 @@ class MemberRepositoryTest {
     @DisplayName("회원데이터 등록 - 아이디 중복")
     void duplicatedMemberSaveTest() {
         // given
+        String salt = EncryptionUtils.createSalt();
         Member member = Member.builder()
                 .id("baek")
                 .password("12345")
@@ -164,6 +170,7 @@ class MemberRepositoryTest {
                 .postcode("45910")
                 .address("부산 해운대구 송정동")
                 .englishName("BJI")
+                .salt(salt)
                 .build();
         memberRepository.save(member);
 
@@ -177,6 +184,7 @@ class MemberRepositoryTest {
                 .postcode("45123")
                 .address("부산 남구 용호동")
                 .englishName("KYJ")
+                .salt(salt)
                 .build();
 
         // expected

@@ -65,13 +65,15 @@ class MemberControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string(""))
                 .andDo(MockMvcResultHandlers.print());
+        Member baek = memberRepository.findById("baek").orElseThrow();
+        System.out.println(baek);
     }
 
     @Test
     @DisplayName("회원수정 테스트")
     void update() throws Exception {
         // given
-        MemberCreate member = MemberCreate.builder()
+        MemberCreate memberCreate = MemberCreate.builder()
                 .id("baek")
                 .password("12345")
                 .name("백정인")
@@ -83,7 +85,7 @@ class MemberControllerTest {
                 .englishName("BJI")
                 .build();
 
-        memberService.create(member);
+        memberService.create(memberCreate);
 
         MemberUpdate memberUpdate = MemberUpdate.builder()
                 .id("baek")
@@ -109,7 +111,7 @@ class MemberControllerTest {
     @DisplayName("회원조회 테스트")
     void get() throws Exception {
         // given
-        Member member = Member.builder()
+        MemberCreate memberCreate = MemberCreate.builder()
                 .id("baek")
                 .password("12345")
                 .name("백정인")
@@ -121,20 +123,20 @@ class MemberControllerTest {
                 .englishName("BJI")
                 .build();
 
-        memberRepository.save(member);
+        memberService.create(memberCreate);
 
         // expected
-        mockMvc.perform(MockMvcRequestBuilders.get("/members/{id}", member.getId())
+        mockMvc.perform(MockMvcRequestBuilders.get("/members/{id}", memberCreate.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(member.getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(member.getName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.ssn").value(member.getSsn()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.tel").value(member.getTel()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(member.getEmail()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.postcode").value(member.getPostcode()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.address").value(member.getAddress()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.englishName").value(member.getEnglishName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(memberCreate.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(memberCreate.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.ssn").value(memberCreate.getSsn()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.tel").value(memberCreate.getTel()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(memberCreate.getEmail()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.postcode").value(memberCreate.getPostcode()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.address").value(memberCreate.getAddress()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.englishName").value(memberCreate.getEnglishName()))
                 .andDo(MockMvcResultHandlers.print());
     }
 
@@ -142,7 +144,7 @@ class MemberControllerTest {
     @DisplayName("회원삭제 테스트")
     void delete() throws Exception {
         // given
-        Member member = Member.builder()
+        MemberCreate memberCreate = MemberCreate.builder()
                 .id("baek")
                 .password("12345")
                 .name("백정인")
@@ -154,10 +156,10 @@ class MemberControllerTest {
                 .englishName("BJI")
                 .build();
 
-        memberRepository.save(member);
+        memberService.create(memberCreate);
 
         // expected
-        mockMvc.perform(MockMvcRequestBuilders.delete("/members/{id}", member.getId())
+        mockMvc.perform(MockMvcRequestBuilders.delete("/members/{id}", memberCreate.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
