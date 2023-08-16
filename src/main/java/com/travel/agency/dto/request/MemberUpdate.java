@@ -15,14 +15,15 @@ public class MemberUpdate {
     @NotBlank(message = "비밀번호를 입력해주세요")
     private final String password;
 
-    @Email(message = "이메일 형식을 맞춰주세요.")
+    @Email(message = "이메일 형식을 맞춰주세요")
     private final String email;
 
+    @Pattern(regexp = "^[0-9]*$", message = "숫자만 입력할 수 있습니다")
     private final String postcode;
 
     private final String address;
 
-    @Pattern(regexp = "^[a-zA-Z]*$", message = "영문만 입력할 수 있습니다.")
+    @Pattern(regexp = "^[a-zA-Z]*$", message = "영문만 입력할 수 있습니다")
     private final String englishName;
 
     @Builder

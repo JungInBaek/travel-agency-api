@@ -54,7 +54,7 @@ class MemberServiceTest {
 
         assertNotNull(member);
         assertEquals(memberCreate.getId(), member.getId());
-        assertEquals(EncryptionUtils.encryptionSHA256(memberCreate.getPassword()), member.getPassword());
+        assertEquals(EncryptionUtils.hashing(memberCreate.getPassword(), member.getSalt()), member.getPassword());
         assertEquals(memberCreate.getName(), member.getName());
         assertEquals(memberCreate.getSsn(), member.getSsn());
         assertEquals(memberCreate.getTel(), member.getTel());
@@ -106,7 +106,7 @@ class MemberServiceTest {
     @DisplayName("회원조회 테스트")
     void fineMemberTest() {
         // given
-        Member member = Member.builder()
+        MemberCreate memberCreate = MemberCreate.builder()
                 .id("baek")
                 .password("12345")
                 .name("백정인")
@@ -118,28 +118,28 @@ class MemberServiceTest {
                 .englishName("BJI")
                 .build();
 
-        memberRepository.save(member);
+        memberService.create(memberCreate);
 
         // when
-        MemberResponse memberResponse = memberService.get(member.getId());
+        MemberResponse memberResponse = memberService.get(memberCreate.getId());
 
         // then
-        assertNotNull(member);
-        assertEquals(member.getId(), memberResponse.getId());
-        assertEquals(member.getName(), memberResponse.getName());
-        assertEquals(member.getSsn(), memberResponse.getSsn());
-        assertEquals(member.getTel(), memberResponse.getTel());
-        assertEquals(member.getEmail(), memberResponse.getEmail());
-        assertEquals(member.getPostcode(), memberResponse.getPostcode());
-        assertEquals(member.getAddress(), memberResponse.getAddress());
-        assertEquals(member.getEnglishName(), memberResponse.getEnglishName());
+        assertNotNull(memberCreate);
+        assertEquals(memberCreate.getId(), memberResponse.getId());
+        assertEquals(memberCreate.getName(), memberResponse.getName());
+        assertEquals(memberCreate.getSsn(), memberResponse.getSsn());
+        assertEquals(memberCreate.getTel(), memberResponse.getTel());
+        assertEquals(memberCreate.getEmail(), memberResponse.getEmail());
+        assertEquals(memberCreate.getPostcode(), memberResponse.getPostcode());
+        assertEquals(memberCreate.getAddress(), memberResponse.getAddress());
+        assertEquals(memberCreate.getEnglishName(), memberResponse.getEnglishName());
     }
 
     @Test
     @DisplayName("회원조회 테스트 - 존재하지 않는 회원")
     void findFailedTest() {
         // given
-        Member member = Member.builder()
+        MemberCreate memberCreate = MemberCreate.builder()
                 .id("baek")
                 .password("12345")
                 .name("백정인")
@@ -151,7 +151,7 @@ class MemberServiceTest {
                 .englishName("BJI")
                 .build();
 
-        memberRepository.save(member);
+        memberService.create(memberCreate);
 
         // expected
         assertThrows(MemberNotFoundException.class, () -> {
@@ -163,7 +163,7 @@ class MemberServiceTest {
     @DisplayName("회원삭제 테스트")
     void deleteTest() {
         // given
-        Member member = Member.builder()
+        MemberCreate memberCreate = MemberCreate.builder()
                 .id("baek")
                 .password("12345")
                 .name("백정인")
@@ -175,14 +175,14 @@ class MemberServiceTest {
                 .englishName("BJI")
                 .build();
 
-        memberRepository.save(member);
+        memberService.create(memberCreate);
 
         // when
-        memberService.delete(member.getId());
+        memberService.delete(memberCreate.getId());
 
         // then
         assertThrows(MemberNotFoundException.class, () -> {
-            memberService.get(member.getId());
+            memberService.get(memberCreate.getId());
         });
     }
 
