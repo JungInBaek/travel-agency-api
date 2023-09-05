@@ -1,9 +1,5 @@
 package com.travel.agency.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import com.travel.agency.domain.Member;
 import com.travel.agency.dto.request.MemberCreate;
 import com.travel.agency.dto.request.MemberUpdate;
@@ -15,6 +11,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 
 @SpringBootTest
 class MemberServiceTest {
@@ -62,6 +62,43 @@ class MemberServiceTest {
         assertEquals(memberCreate.getPostcode(), member.getPostcode());
         assertEquals(memberCreate.getAddress(), member.getAddress());
         assertEquals(memberCreate.getEnglishName(), member.getEnglishName());
+    }
+
+    @Test
+    @DisplayName("회원가입 - 아이디 중복")
+    void duplicatedMemberSaveTest() {
+        // given
+        String salt = EncryptionUtils.createSalt();
+        Member member = Member.builder()
+                .id("baek")
+                .password("12345")
+                .name("백정인")
+                .ssn("960519-1111111")
+                .tel("010-1111-2222")
+                .email("baek@naver.com")
+                .postcode("45910")
+                .address("부산 해운대구 송정동")
+                .englishName("BJI")
+                .salt(salt)
+                .build();
+        memberRepository.save(member);
+
+        MemberCreate kwon = MemberCreate.builder()
+                .id("baek")
+                .password("54321")
+                .name("권용재")
+                .ssn("961231-2222222")
+                .tel("010-3333-4444")
+                .email("kwon@naver.com")
+                .postcode("45123")
+                .address("부산 남구 용호동")
+                .englishName("KYJ")
+                .build();
+
+        // expected
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            memberService.create(kwon);
+        });
     }
 
     @Test
