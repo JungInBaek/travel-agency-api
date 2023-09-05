@@ -23,7 +23,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/members")
-    public void post(@RequestBody @Valid MemberCreate memberCreate) {
+    public void create(@RequestBody @Valid MemberCreate memberCreate) {
         memberService.create(memberCreate);
     }
 
