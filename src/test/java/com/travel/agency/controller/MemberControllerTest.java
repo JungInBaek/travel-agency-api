@@ -18,6 +18,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 class MemberControllerTest {
@@ -65,8 +67,56 @@ class MemberControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string(""))
                 .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("회원가입 테스트 - json 필드 공백")
+    void create2() throws Exception {
+        // given
+        MemberCreate memberCreate = MemberCreate.builder()
+                .id("baek")
+                .password("12345")
+                .name("백정인")
+                .ssn("960519-1111111")
+                .tel("010-1111-2222")
+                .email("")
+                .postcode("")
+                .address("")
+                .englishName("")
+                .build();
+
+        String json = objectMapper.writeValueAsString(memberCreate);
+
+        // expected
+        mockMvc.perform(MockMvcRequestBuilders.post("/members")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string(""))
+                .andDo(MockMvcResultHandlers.print());
         Member baek = memberRepository.findById("baek").orElseThrow();
-        System.out.println(baek);
+        assertEquals("", baek.getEmail());
+        assertEquals("", baek.getPostcode());
+        assertEquals("", baek.getAddress());
+        assertEquals("", baek.getEnglishName());
+    }
+
+    @Test
+    @DisplayName("회원가입 테스트 - json 필드 누락")
+    void create3() throws Exception {
+        // given
+        String json = "{\"id\": \"baek\", \"password\": \"12345\", \"name\": \"백정인\", \"ssn\": \"960519-1111111\", \"tel\": \"010-1111-2222\"}";
+        // expected
+        mockMvc.perform(MockMvcRequestBuilders.post("/members")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+        Member baek = memberRepository.findById("baek").orElseThrow();
+        assertEquals("", baek.getEmail());
+        assertEquals("", baek.getPostcode());
+        assertEquals("", baek.getAddress());
+        assertEquals("", baek.getEnglishName());
     }
 
     @Test
