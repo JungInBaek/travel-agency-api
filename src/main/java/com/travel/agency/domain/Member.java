@@ -11,6 +11,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 @Getter
 @ToString
@@ -44,7 +46,6 @@ public class Member {
     @Column(nullable = false)
     private String salt;
 
-    @Builder
     private Member(String id, String password, String name, String ssn, String tel, String email,
             String postcode, String address, String englishName, String salt) {
         this.id = id;
@@ -81,6 +82,84 @@ public class Member {
         this.postcode = memberUpdate.getPostcode();
         this.address = memberUpdate.getAddress();
         this.englishName = memberUpdate.getEnglishName();
+    }
+
+    public static MemberBuilder builder() {
+        return new MemberBuilder();
+    }
+
+    public static class MemberBuilder {
+        private String id;
+        private String password;
+        private String name;
+        private String ssn;
+        private String tel;
+        private String email;
+        private String postcode;
+        private String address;
+        private String englishName;
+        private String salt;
+
+        MemberBuilder() {
+        }
+
+        public MemberBuilder id(final String id) {
+            this.id = id;
+            return this;
+        }
+
+        public MemberBuilder password(final String password) {
+            this.password = password;
+            return this;
+        }
+
+        public MemberBuilder name(final String name) {
+            this.name = name;
+            return this;
+        }
+
+        public MemberBuilder ssn(final String ssn) {
+            this.ssn = ssn;
+            return this;
+        }
+
+        public MemberBuilder tel(final String tel) {
+            this.tel = tel;
+            return this;
+        }
+
+        public MemberBuilder email(final String email) {
+            this.email = (email != null) ? email : "";
+            return this;
+        }
+
+        public MemberBuilder postcode(final String postcode) {
+            this.postcode = (postcode != null) ? postcode : "";
+            return this;
+        }
+
+        public MemberBuilder address(final String address) {
+            this.address = (address != null) ? address : "";
+            return this;
+        }
+
+        public MemberBuilder englishName(final String englishName) {
+            this.englishName = (englishName != null) ? englishName : "";
+            return this;
+        }
+
+        public MemberBuilder salt(final String salt) {
+            this.salt = salt;
+            return this;
+        }
+
+        public Member build() {
+            return new Member(this.id, this.password, this.name, this.ssn, this.tel, this.email, this.postcode, this.address, this.englishName, this.salt);
+        }
+
+        public String toString() {
+            return "Member.MemberBuilder(id=" + this.id + ", password=" + this.password + ", name=" + this.name + ", ssn=" + this.ssn + ", tel=" + this.tel + ", email=" + this.email + ", postcode=" + this.postcode + ", address=" + this.address + ", englishName=" + this.englishName + ", salt=" + this.salt + ")";
+        }
     }
 
 }
