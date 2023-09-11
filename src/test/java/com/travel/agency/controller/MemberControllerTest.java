@@ -47,8 +47,8 @@ class MemberControllerTest {
     void create() throws Exception {
         // given
         MemberCreate memberCreate = MemberCreate.builder()
-                .id("baek")
-                .password("12345")
+                .id("baek1")
+                .password("test@1234")
                 .name("백정인")
                 .ssn("960519-1111111")
                 .tel("010-1111-2222")
@@ -74,8 +74,8 @@ class MemberControllerTest {
     void create2() throws Exception {
         // given
         MemberCreate memberCreate = MemberCreate.builder()
-                .id("baek")
-                .password("12345")
+                .id("baek1")
+                .password("test@123")
                 .name("백정인")
                 .ssn("960519-1111111")
                 .tel("010-1111-2222")
@@ -105,7 +105,7 @@ class MemberControllerTest {
     @DisplayName("회원가입 테스트 - json 필드 누락")
     void create3() throws Exception {
         // given
-        String json = "{\"id\": \"baek\", \"password\": \"12345\", \"name\": \"백정인\", \"ssn\": \"960519-1111111\", \"tel\": \"010-1111-2222\"}";
+        String json = "{\"id\": \"baek1\", \"password\": \"test@123\", \"name\": \"백정인\", \"ssn\": \"960519-1111111\", \"tel\": \"010-1111-2222\"}";
         // expected
         mockMvc.perform(MockMvcRequestBuilders.post("/members")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -124,8 +124,8 @@ class MemberControllerTest {
     void update() throws Exception {
         // given
         MemberCreate memberCreate = MemberCreate.builder()
-                .id("baek")
-                .password("12345")
+                .id("baek1")
+                .password("test@123")
                 .name("백정인")
                 .ssn("960519-1111111")
                 .tel("010-1111-2222")
@@ -138,8 +138,8 @@ class MemberControllerTest {
         memberService.create(memberCreate);
 
         MemberUpdate memberUpdate = MemberUpdate.builder()
-                .id("baek")
-                .password("12345")
+                .id("baek1")
+                .password("test@123")
                 .email("kwon@naver.com")
                 .postcode("11111")
                 .address("부산 중구 남포동")
@@ -162,8 +162,8 @@ class MemberControllerTest {
     void get() throws Exception {
         // given
         MemberCreate memberCreate = MemberCreate.builder()
-                .id("baek")
-                .password("12345")
+                .id("baek1")
+                .password("test@123")
                 .name("백정인")
                 .ssn("960519-1111111")
                 .tel("010-1111-2222")
@@ -195,8 +195,8 @@ class MemberControllerTest {
     void delete() throws Exception {
         // given
         MemberCreate memberCreate = MemberCreate.builder()
-                .id("baek")
-                .password("12345")
+                .id("baek1")
+                .password("test@123")
                 .name("백정인")
                 .ssn("960519-1111111")
                 .tel("010-1111-2222")

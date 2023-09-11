@@ -1,10 +1,11 @@
 package com.travel.agency.service;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class EncryptionUtils {

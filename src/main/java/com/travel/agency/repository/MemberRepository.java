@@ -2,13 +2,14 @@ package com.travel.agency.repository;
 
 import com.travel.agency.domain.Member;
 import com.travel.agency.exception.MemberNotFoundException;
-import java.util.List;
-import java.util.Optional;
-import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+
+import javax.persistence.EntityManager;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
