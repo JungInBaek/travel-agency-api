@@ -1,10 +1,11 @@
 package com.travel.agency.dto.request;
 
+import lombok.Builder;
+import lombok.Getter;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import lombok.Builder;
-import lombok.Getter;
 
 @Getter
 public class MemberUpdate {
