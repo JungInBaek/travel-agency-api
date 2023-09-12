@@ -48,7 +48,7 @@ class MemberControllerTest {
         // given
         MemberCreate memberCreate = MemberCreate.builder()
                 .id("baek1")
-                .password("test@1234")
+                .password("tE1@Test12")
                 .name("백정인")
                 .ssn("960519-1111111")
                 .tel("010-1111-2222")
@@ -75,7 +75,7 @@ class MemberControllerTest {
         // given
         MemberCreate memberCreate = MemberCreate.builder()
                 .id("baek1")
-                .password("test@123")
+                .password("Test@1234")
                 .name("백정인")
                 .ssn("960519-1111111")
                 .tel("010-1111-2222")
@@ -94,7 +94,7 @@ class MemberControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().string(""))
                 .andDo(MockMvcResultHandlers.print());
-        Member baek = memberRepository.findById("baek").orElseThrow();
+        Member baek = memberRepository.findById("baek1").orElseThrow();
         assertEquals("", baek.getEmail());
         assertEquals("", baek.getPostcode());
         assertEquals("", baek.getAddress());
@@ -105,14 +105,14 @@ class MemberControllerTest {
     @DisplayName("회원가입 테스트 - json 필드 누락")
     void create3() throws Exception {
         // given
-        String json = "{\"id\": \"baek1\", \"password\": \"test@123\", \"name\": \"백정인\", \"ssn\": \"960519-1111111\", \"tel\": \"010-1111-2222\"}";
+        String json = "{\"id\": \"baek1\", \"password\": \"Test@123\", \"name\": \"백정인\", \"ssn\": \"960519-1111111\", \"tel\": \"010-1111-2222\"}";
         // expected
         mockMvc.perform(MockMvcRequestBuilders.post("/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
-        Member baek = memberRepository.findById("baek").orElseThrow();
+        Member baek = memberRepository.findById("baek1").orElseThrow();
         assertEquals("", baek.getEmail());
         assertEquals("", baek.getPostcode());
         assertEquals("", baek.getAddress());
