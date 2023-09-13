@@ -121,7 +121,7 @@ class MemberControllerTest {
 
     @Test
     @DisplayName("회원수정 테스트")
-    void update() throws Exception {
+    void update1() throws Exception {
         // given
         MemberCreate memberCreate = MemberCreate.builder()
                 .id("baek1")
@@ -154,6 +154,44 @@ class MemberControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("회원수정 테스트 - 잘못된 id값")
+    void update2() throws Exception {
+        // given
+        MemberCreate memberCreate = MemberCreate.builder()
+                .id("baek1")
+                .password("test@123")
+                .name("백정인")
+                .ssn("960519-1111111")
+                .tel("010-1111-2222")
+                .email("baek@naver.com")
+                .postcode("45910")
+                .address("부산 해운대구 송정동")
+                .englishName("BJI")
+                .build();
+
+        memberService.create(memberCreate);
+
+        MemberUpdate memberUpdate = MemberUpdate.builder()
+                .id("baek12")
+                .password("test@123")
+                .email("kwon@naver.com")
+                .postcode("11111")
+                .address("부산 중구 남포동")
+                .englishName("KYJ")
+                .build();
+
+        String json = objectMapper.writeValueAsString(memberUpdate);
+
+        // expected
+        mockMvc.perform(MockMvcRequestBuilders.patch("/members")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andDo(MockMvcResultHandlers.print());
     }
 

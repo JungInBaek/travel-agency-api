@@ -4,6 +4,7 @@ import com.travel.agency.domain.Member;
 import com.travel.agency.dto.request.MemberCreate;
 import com.travel.agency.dto.request.MemberUpdate;
 import com.travel.agency.dto.response.MemberResponse;
+import com.travel.agency.exception.InvalidMemberIdException;
 import com.travel.agency.exception.InvalidPasswordException;
 import com.travel.agency.exception.MemberNotFoundException;
 import com.travel.agency.repository.MemberRepository;
@@ -26,7 +27,10 @@ public class MemberService {
     }
 
     public void update(MemberUpdate memberUpdate) {
-        String salt = memberRepository.getSalt(memberUpdate.getId())
+        String id = memberUpdate.getId();
+        memberRepository.findById(id)
+                .orElseThrow(() -> new InvalidMemberIdException());
+        String salt = memberRepository.getSalt(id)
                 .orElseThrow(() -> new RuntimeException(memberUpdate.getId() + " >>> Salt값 없음"));
         String password = EncryptionUtils.hashing(memberUpdate.getPassword(), salt);
         Member savedMember = memberRepository
