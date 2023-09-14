@@ -15,7 +15,7 @@ public class MemberUpdate {
     private final String id;
 
     @NotBlank(message = "비밀번호를 입력해주세요")
-    @Pattern(regexp = "[([a-z].+)([A-z].+)([0-9].+)([!@#].+)]{8,12}", message = "올바르지 않는 형식입니다") // 최소 8~12자, 대문자 1개, 소문자 1개, 숫자 1개, 특수문자 1개 포함
+    @Pattern(regexp = "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#])[a-zA-Z0-9!@#]{8,12}", message = "올바르지 않는 형식입니다") // 최소 8~12자, 대문자 1개, 소문자 1개, 숫자 1개, 특수문자 1개 포함
     private final String password;
 
     @Email(message = "이메일 형식을 맞춰주세요")

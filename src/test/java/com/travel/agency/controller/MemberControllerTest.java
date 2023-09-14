@@ -125,7 +125,7 @@ class MemberControllerTest {
         // given
         MemberCreate memberCreate = MemberCreate.builder()
                 .id("baek1")
-                .password("test@123")
+                .password("Test@123")
                 .name("백정인")
                 .ssn("960519-1111111")
                 .tel("010-1111-2222")
@@ -139,7 +139,7 @@ class MemberControllerTest {
 
         MemberUpdate memberUpdate = MemberUpdate.builder()
                 .id("baek1")
-                .password("test@123")
+                .password("Test@123")
                 .email("kwon@naver.com")
                 .postcode("11111")
                 .address("부산 중구 남포동")
@@ -149,7 +149,7 @@ class MemberControllerTest {
         String json = objectMapper.writeValueAsString(memberUpdate);
 
         // expected
-        mockMvc.perform(MockMvcRequestBuilders.patch("/members", memberUpdate.getId())
+        mockMvc.perform(MockMvcRequestBuilders.patch("/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(json))
@@ -192,6 +192,86 @@ class MemberControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("회원수정 테스트 - 잘못된 패스워드값")
+    void update3() throws Exception {
+        // given
+        MemberCreate memberCreate = MemberCreate.builder()
+                .id("baek1")
+                .password("Test@123")
+                .name("백정인")
+                .ssn("960519-1111111")
+                .tel("010-1111-2222")
+                .email("baek@naver.com")
+                .postcode("45910")
+                .address("부산 해운대구 송정동")
+                .englishName("BJI")
+                .build();
+        memberService.create(memberCreate);
+
+        MemberUpdate memberUpdate = MemberUpdate.builder()
+                .id("baek1")
+                .password("Test@1234")
+                .email("kwon@naver.com")
+                .postcode("11111")
+                .address("부산 중구 남포동")
+                .englishName("KYJ")
+                .build();
+        String json = objectMapper.writeValueAsString(memberUpdate);
+
+        // expected
+        mockMvc.perform(MockMvcRequestBuilders.patch("/members")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("400 BAD_REQUEST"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("잘못된 비밀번호입니다"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.validation").isEmpty())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("회원수정 테스트 - 수정데이터 정규표현식")
+    void update4() throws Exception {
+        // given
+        MemberCreate memberCreate = MemberCreate.builder()
+                .id("baek1")
+                .password("Test@123")
+                .name("백정인")
+                .ssn("960519-1111111")
+                .tel("010-1111-2222")
+                .email("baek@naver.com")
+                .postcode("45910")
+                .address("부산 해운대구 송정동")
+                .englishName("BJI")
+                .build();
+        memberService.create(memberCreate);
+
+        MemberUpdate memberUpdate = MemberUpdate.builder()
+                .id("baek1")
+                .password("Test@123")
+                .email("kwon.naver.com")
+                .postcode("ttttt")
+                .address("부산 중구 남포동")
+                .englishName("권용제")
+                .build();
+        String json = objectMapper.writeValueAsString(memberUpdate);
+
+        // expected
+        mockMvc.perform(MockMvcRequestBuilders.patch("/members")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("400 BAD_REQUEST"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("잘못된 요청입니다"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.validation.email").value("이메일 형식을 맞춰주세요"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.validation.postcode").value("숫자만 입력할 수 있습니다"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.validation.englishName").value("영문만 입력할 수 있습니다"))
                 .andDo(MockMvcResultHandlers.print());
     }
 

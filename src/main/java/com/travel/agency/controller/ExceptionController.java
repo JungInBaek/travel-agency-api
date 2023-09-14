@@ -50,22 +50,6 @@ public class ExceptionController {
                 .body(errorResponse);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(InvalidMemberIdException.class)
-    public ResponseEntity<ErrorResponse> invalidMemberIdException(InvalidMemberIdException e) {
-        log.error("InvalidMemberIdException", e);
-
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .code(HttpStatus.BAD_REQUEST.toString())
-                .message(e.getMessage())
-                .validation(e.getValidation())
-                .build();
-
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(errorResponse);
-    }
-
     @ExceptionHandler(TravelApiException.class)
     public ResponseEntity<ErrorResponse> travelApiException(TravelApiException e) {
         log.error("TravelApiException", e);

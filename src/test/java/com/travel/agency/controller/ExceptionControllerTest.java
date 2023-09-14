@@ -1,8 +1,12 @@
 package com.travel.agency.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.jdi.request.InvalidRequestStateException;
 import com.travel.agency.dto.request.MemberCreate;
 import com.travel.agency.dto.request.MemberUpdate;
+import com.travel.agency.exception.InvalidMemberIdException;
+import com.travel.agency.exception.InvalidPasswordException;
+import com.travel.agency.exception.MemberNotFoundException;
 import com.travel.agency.repository.MemberRepository;
 import com.travel.agency.service.MemberService;
 import org.junit.jupiter.api.AfterEach;
@@ -16,6 +20,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -74,6 +81,7 @@ class ExceptionControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.validation.email").value("이메일 형식을 맞춰주세요"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.validation.postcode").value("숫자만 입력할 수 있습니다"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.validation.englishName").value("영문만 입력할 수 있습니다"))
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException))
                 .andDo(MockMvcResultHandlers.print());
     }
 
@@ -87,6 +95,7 @@ class ExceptionControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("404 NOT_FOUND"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("존재하지 않는 회원입니다"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.validation").isEmpty())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof MemberNotFoundException))
                 .andDo(MockMvcResultHandlers.print());
     }
 
@@ -96,7 +105,7 @@ class ExceptionControllerTest {
         // given
         MemberCreate memberCreate = MemberCreate.builder()
                 .id("baek1")
-                .password("test@123")
+                .password("Test@123")
                 .name("백정인")
                 .ssn("960519-1111111")
                 .tel("010-1111-2222")
@@ -109,7 +118,7 @@ class ExceptionControllerTest {
 
         MemberUpdate memberUpdate = MemberUpdate.builder()
                 .id("baek12")
-                .password("test@123")
+                .password("Test@123")
                 .email("kwon@naver.com")
                 .postcode("11111")
                 .address("부산 중구 남포동")
@@ -124,8 +133,45 @@ class ExceptionControllerTest {
                         .content(json))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("400 BAD_REQUEST"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("잘못된 회원ID값입니다"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.validation").isEmpty())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof InvalidMemberIdException))
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("InvalidPasswordException 예외 발생 테스트")
+    void InvalidPasswordExceptionTest() throws Exception {
+        // given
+        MemberCreate memberCreate = MemberCreate.builder()
+                .id("baek1")
+                .password("Test@123")
+                .name("백정인")
+                .ssn("960519-1111111")
+                .tel("010-1111-2222")
+                .email("baek@naver.com")
+                .postcode("45910")
+                .address("부산 해운대구 송정동")
+                .englishName("BJI")
+                .build();
+        memberService.create(memberCreate);
+
+        MemberUpdate memberUpdate = MemberUpdate.builder()
+                .id("baek1")
+                .password("Test@1234")
+                .email("kwon@naver.com")
+                .postcode("11111")
+                .address("부산 중구 남포동")
+                .englishName("KYJ")
+                .build();
+        String json = objectMapper.writeValueAsString(memberUpdate);
+
+        // expected
+        mockMvc.perform(MockMvcRequestBuilders.patch("/members")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value("400 BAD_REQUEST"))
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof InvalidPasswordException))
                 .andDo(MockMvcResultHandlers.print());
     }
 
