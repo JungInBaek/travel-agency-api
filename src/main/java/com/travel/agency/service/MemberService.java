@@ -53,6 +53,8 @@ public class MemberService {
     }
 
     public void delete(String id) {
+        memberRepository.findById(id)
+                .orElseThrow(MemberNotFoundException::new);
         memberRepository.deleteById(id);
     }
 
