@@ -105,7 +105,8 @@ class MemberControllerTest {
     @DisplayName("회원가입 테스트 - json 필드 누락")
     void create3() throws Exception {
         // given
-        String json = "{\"id\": \"baek1\", \"password\": \"Test@123\", \"name\": \"백정인\", \"ssn\": \"960519-1111111\", \"tel\": \"010-1111-2222\"}";
+        String json = "{ \"id\":\"baek1\", \"password\":\"Test@123\", \"name\":\"백정인\", \"ssn\":\"960519-1111111\", \"tel\":\"010-1111-2222\" }";
+
         // expected
         mockMvc.perform(MockMvcRequestBuilders.post("/members")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -235,7 +236,7 @@ class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("회원수정 테스트 - 수정데이터 정규표현식")
+    @DisplayName("회원수정 테스트 - 수정 데이터 정규표현식")
     void update4() throws Exception {
         // given
         MemberCreate memberCreate = MemberCreate.builder()
@@ -276,8 +277,94 @@ class MemberControllerTest {
     }
 
     @Test
+    @DisplayName("회원수정 테스트 - json 필드 누락")
+    void update5() throws Exception {
+        // given
+        MemberCreate memberCreate = MemberCreate.builder()
+                .id("baek1")
+                .password("Test@123")
+                .name("백정인")
+                .ssn("960519-1111111")
+                .tel("010-1111-2222")
+                .email("baek@naver.com")
+                .postcode("45910")
+                .address("부산 해운대구 송정동")
+                .englishName("BJI")
+                .build();
+
+        memberService.create(memberCreate);
+
+        MemberUpdate memberUpdate = MemberUpdate.builder()
+                .id("baek1")
+                .password("Test@123")
+                .email("kwon@naver.com")
+                .postcode("11111")
+                .address("부산 중구 남포동")
+                .englishName("KYJ")
+                .build();
+
+        String json = "{ \"id\": \"baek1\", \"password\": \"Test@123\" }";
+
+        // expected
+        mockMvc.perform(MockMvcRequestBuilders.patch("/members")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+        Member baek1 = memberRepository.findById("baek1").orElseThrow();
+        assertEquals("", baek1.getEmail());
+        assertEquals("", baek1.getPostcode());
+        assertEquals("", baek1.getAddress());
+        assertEquals("", baek1.getEnglishName());
+    }
+
+    @Test
+    @DisplayName("회원수정 테스트 - json 필드 누락")
+    void update6() throws Exception {
+        // given
+        MemberCreate memberCreate = MemberCreate.builder()
+                .id("baek1")
+                .password("Test@123")
+                .name("백정인")
+                .ssn("960519-1111111")
+                .tel("010-1111-2222")
+                .email("baek@naver.com")
+                .postcode("45910")
+                .address("부산 해운대구 송정동")
+                .englishName("BJI")
+                .build();
+
+        memberService.create(memberCreate);
+
+        MemberUpdate memberUpdate = MemberUpdate.builder()
+                .id("baek1")
+                .password("Test@123")
+                .email("kwon@naver.com")
+                .postcode("11111")
+                .address("부산 중구 남포동")
+                .englishName("KYJ")
+                .build();
+
+        String json = "{ \"id\":\"baek1\", \"password\":\"Test@123\", \"email\":\"kwon@naver.com\" }";
+
+        // expected
+        mockMvc.perform(MockMvcRequestBuilders.patch("/members")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+        Member baek1 = memberRepository.findById("baek1").orElseThrow();
+        assertEquals("kwon@naver.com", baek1.getEmail());
+        assertEquals("", baek1.getPostcode());
+        assertEquals("", baek1.getAddress());
+        assertEquals("", baek1.getEnglishName());
+    }
+
+    @Test
     @DisplayName("회원조회 테스트")
-    void get() throws Exception {
+    void get1() throws Exception {
         // given
         MemberCreate memberCreate = MemberCreate.builder()
                 .id("baek1")
@@ -309,8 +396,34 @@ class MemberControllerTest {
     }
 
     @Test
+    @DisplayName("회원조회 테스트")
+    void get2() throws Exception {
+        // given
+        MemberCreate memberCreate = MemberCreate.builder()
+                .id("baek1")
+                .password("test@123")
+                .name("백정인")
+                .ssn("960519-1111111")
+                .tel("010-1111-2222")
+                .email("baek@naver.com")
+                .postcode("45910")
+                .address("부산 해운대구 송정동")
+                .englishName("BJI")
+                .build();
+
+        memberService.create(memberCreate);
+        memberService.delete(memberCreate.getId());
+
+        // expected
+        mockMvc.perform(MockMvcRequestBuilders.get("/members/{id}", memberCreate.getId())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
     @DisplayName("회원삭제 테스트")
-    void delete() throws Exception {
+    void delete1() throws Exception {
         // given
         MemberCreate memberCreate = MemberCreate.builder()
                 .id("baek1")
@@ -330,6 +443,33 @@ class MemberControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.delete("/members/{id}", memberCreate.getId())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    @DisplayName("회원삭제 테스트")
+    void delete2() throws Exception {
+        // given
+        MemberCreate memberCreate = MemberCreate.builder()
+                .id("baek1")
+                .password("test@123")
+                .name("백정인")
+                .ssn("960519-1111111")
+                .tel("010-1111-2222")
+                .email("baek@naver.com")
+                .postcode("45910")
+                .address("부산 해운대구 송정동")
+                .englishName("BJI")
+                .build();
+
+        memberService.create(memberCreate);
+        memberService.delete(memberCreate.getId());
+
+        // expected
+        mockMvc.perform(MockMvcRequestBuilders.delete("/members/{id}", memberCreate.getId())
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("존재하지 않는 회원입니다"))
                 .andDo(MockMvcResultHandlers.print());
     }
 

@@ -76,10 +76,14 @@ public class Member {
     }
 
     public void edit(MemberUpdate memberUpdate) {
-        this.email = memberUpdate.getEmail();
-        this.postcode = memberUpdate.getPostcode();
-        this.address = memberUpdate.getAddress();
-        this.englishName = memberUpdate.getEnglishName();
+        String email = memberUpdate.getEmail();
+        String postcode = memberUpdate.getPostcode();
+        String address = memberUpdate.getAddress();
+        String englishName = memberUpdate.getEnglishName();
+        this.email = (email != null) ? email : "";
+        this.postcode = (postcode != null) ? postcode : "";
+        this.address = (address != null) ? address : "";
+        this.englishName = (englishName != null) ? englishName : "";
     }
 
     public static MemberBuilder builder() {
